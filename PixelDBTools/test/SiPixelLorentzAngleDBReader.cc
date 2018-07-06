@@ -59,7 +59,7 @@ SiPixelLorentzAngleDBReader::SiPixelLorentzAngleDBReader( const edm::ParameterSe
 //     302188552, 302187280, 302186768, 302186764, 302186756, 302197516
 //   };
 //   for(int i=0; i<6; ++i) l3New.push_back(bmi3[i]);
-//   cout<<" 2 "<<endl;
+   cout<<" 2 "<<endl;
 
  }
 

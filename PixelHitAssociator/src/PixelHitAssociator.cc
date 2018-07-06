@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "DPGAnalysis-SiPixelTools/PixelHitAssociator/interface/PixelHitAssociator.h"
+#include "PixelTools/PixelHitAssociator/interface/PixelHitAssociator.h"
 
 //--- for Geometry:
 #include "DataFormats/Common/interface/Ref.h"

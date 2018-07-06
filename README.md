@@ -4,22 +4,19 @@
 Prepare your working directory with whatever CMSSW version you want to use (branch "master" is currently on 94X)
 
 ```
-mkdir PixelAnalysis
-cd PixelAnalysis
-cmsrel CMSSW_9_4_0
-cd CMSSW_9_4_0/src
+cmsrel CMSSW_10_2_0_pre6
+cd CMSSW_10_2_0_pre6/src
 cmsenv
 ```
 
 Fork DPGAnalysis-SiPixelTools from https://github.com/cms-analysis/DPGAnalysis-SiPixelTools and checkout the code
 
 ```
-export GITUSER=`git config user.github`
-git clone https://github.com/${GITUSER}/DPGAnalysis-SiPixelTools PixelTools
-cd PixelTools
-git remote add cms-analysis https://github.com/cms-analysis/DPGAnalysis-SiPixelTools.git
-git fetch cms-analysis
-git checkout -b DevelopmentBranch cms-analysis/master
+
+git clone https://github.com/emiglior/DPGAnalysis-SiPixelTools PixelTools
+cd PixelTools/
+git fetch origin
+git checkout -b DevelopmentBranch origin/SiPixelLorentzAngle_10_2_X
 cd **myPackage**(see below)
 scram b -j 20
 ```

@@ -23,7 +23,7 @@ Implementation:
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
-#include "DPGAnalysis-SiPixelTools/GainCalibration/plugins/SiPixelOfflineCalibAnalysisBase.h"
+#include "PixelTools/GainCalibration/plugins/SiPixelOfflineCalibAnalysisBase.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"

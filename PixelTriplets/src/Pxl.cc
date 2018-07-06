@@ -51,10 +51,10 @@
 // To convert detId to subdet/layer number:
 #include "DataFormats/SiStripDetId/interface/StripSubdetector.h"
 #include "DataFormats/SiPixelDetId/interface/PixelSubdetector.h"
-#include "DataFormats/SiStripDetId/interface/TIBDetId.h"
-#include "DataFormats/SiStripDetId/interface/TOBDetId.h"
-#include "DataFormats/SiStripDetId/interface/TECDetId.h"
-#include "DataFormats/SiStripDetId/interface/TIDDetId.h"
+// #include "DataFormats/SiStripDetId/interface/TIBDetId.h"
+// #include "DataFormats/SiStripDetId/interface/TOBDetId.h"
+// #include "DataFormats/SiStripDetId/interface/TECDetId.h"
+// #include "DataFormats/SiStripDetId/interface/TIDDetId.h"
 #include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
 #include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
 
@@ -3872,10 +3872,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	}
 
 	if( subDet == 4 && idbg ){//4=TID
-	  cout << "  TID side " << TIDDetId(detId).side();
-	  cout << ", disk " << TIDDetId(detId).diskNumber();
-	  cout << ", ring " << TIDDetId(detId).ringNumber();
-	  cout << ", stereo " << TIDDetId(detId).isStereo();
+	  cout << "  TID side " << tTopo->tidSide(detId);
+	  cout << ", disk " << tTopo->tidWheel(detId);
+	  cout << ", ring " << tTopo->tidRing(detId);
+	  cout << ", stereo " << tTopo->isStereo(detId);
 	  cout << endl;
 	  cout << setprecision(4);
 	  cout << "  xHit " << xHit;
@@ -4136,7 +4136,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	  if( pt > 4 ) k308->Fill( alf_inc*wt );
 
 	  if(// TIBDetId( detId ).layer()
-	     tTopo->tibLayer(detId) == 1 && TIBDetId(detId).isRPhi() ) {
+	     tTopo->tibLayer(detId) == 1 && tTopo->isRPhi(detId) ) {
 	    k310->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k311->Fill( dx*1E4 );
@@ -4152,7 +4152,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	  }//layer
 
 	  if( //TIBDetId( detId ).layer() 
-	      tTopo->tibLayer(detId) == 1 && TIBDetId(detId).isStereo() ) {
+	     tTopo->tibLayer(detId) == 1 && tTopo->isStereo(detId) ) {
 	    k320->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k321->Fill( dx*1E4 );
@@ -4168,7 +4168,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	  }//layer
 
 	  if( //TIBDetId( detId ).layer()
-	      tTopo->tibLayer(detId) == 2 && TIBDetId(detId).isRPhi() ) {
+	      tTopo->tibLayer(detId) == 2 && tTopo->isRPhi(detId) ) {
 	    k330->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k331->Fill( dx*1E4 );
@@ -4184,7 +4184,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	  }//layer
 
 	  if( //TIBDetId( detId ).layer()
-	      tTopo->tibLayer(detId) == 2 && TIBDetId(detId).isStereo() ) {
+	      tTopo->tibLayer(detId) == 2 && tTopo->isStereo(detId) ) {
 	    k340->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k341->Fill( dx*1E4 );
@@ -4248,10 +4248,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    k406->Fill( xptch*1E4, abs(dx)*1E4 );
 	  }
 
-	  if( TIDDetId(detId).ringNumber() == 1 ) {
+	  if( tTopo->tidRing(detId) == 1 ) {
 	    k410->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
-	      if( TIDDetId(detId).isRPhi() )
+	      if( tTopo->isRPhi(detId) )
 		k411->Fill( dx*1E4 );
 	      else
 		k412->Fill( dx*1E4 );
@@ -4260,10 +4260,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    }
 	  }
 
-	  if( TIDDetId(detId).ringNumber() == 2 ) {
+	  if( tTopo->tidRing(detId) == 2 ) {
 	    k420->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
-	      if( TIDDetId(detId).isRPhi() )
+	      if( tTopo->isRPhi(detId) )
 		k421->Fill( dx*1E4 );
 	      else
 		k422->Fill( dx*1E4 );
@@ -4272,10 +4272,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    }
 	  }
 
-	  if( TIDDetId(detId).ringNumber() == 3 ) {
+	  if( tTopo->tidRing(detId) == 3 ) {
 	    k430->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
-	      if( TIDDetId(detId).isRPhi() )
+	      if( tTopo->isRPhi(detId) )
 		k431->Fill( dx*1E4 );
 	      else
 		k432->Fill( dx*1E4 );
@@ -4299,7 +4299,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	  }//pt
 	  if( pt > 4 ) k508->Fill( alf_inc*wt ); //at 0, +-180
 
-	  if( TOBDetId( detId ).layer() == 1 && TOBDetId(detId).isRPhi() ) {
+	  if( tTopo->tobLayer(detId) == 1 && tTopo->isRPhi(detId) ) {
 	    k510->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k511->Fill( dx*1E4 );
@@ -4314,7 +4314,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k519->Fill( dx*1E4 );
 	  }//layer
 
-	  if( TOBDetId( detId ).layer() == 1 && TOBDetId(detId).isStereo() ) {
+	  if( tTopo->tobLayer(detId) == 1 && tTopo->isStereo(detId) ) {
 	    k520->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k521->Fill( dx*1E4 );
@@ -4329,7 +4329,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k529->Fill( dx*1E4 );
 	  }//layer
 
-	  if( TOBDetId( detId ).layer() == 2 && TOBDetId(detId).isRPhi() ) {
+	  if( tTopo->tobLayer(detId) == 2 && tTopo->isRPhi(detId) ) {
 	    k530->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k531->Fill( dx*1E4 );
@@ -4344,7 +4344,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k539->Fill( dx*1E4 );
 	  }//layer
 
-	  if( TOBDetId( detId ).layer() == 2 && TOBDetId(detId).isStereo() ) {
+	  if( tTopo->tobLayer(detId) == 2 && tTopo->isStereo(detId) ) {
 	    k540->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k541->Fill( dx*1E4 );
@@ -4359,7 +4359,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k549->Fill( dx*1E4 );
 	  }//layer
 
-	  if( TOBDetId( detId ).layer() == 3 ) {
+	  if( tTopo->tobLayer(detId) == 3 ) {
 	    k550->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k551->Fill( dx*1E4 );
@@ -4374,7 +4374,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k559->Fill( dx*1E4 );
 	  }//layer
 
-	  if( TOBDetId( detId ).layer() == 4 ) {
+	  if( tTopo->tobLayer(detId) == 4 ) {
 	    k560->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k561->Fill( dx*1E4 );
@@ -4389,7 +4389,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k569->Fill( dx*1E4 );
 	  }//layer
 
-	  if( TOBDetId( detId ).layer() == 5 ) {
+	  if( tTopo->tobLayer(detId) == 5 ) {
 	    k570->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k571->Fill( dx*1E4 );
@@ -4404,7 +4404,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k579->Fill( dx*1E4 );
 	  }//layer
 
-	  if( TOBDetId( detId ).layer() == 6 ) {
+	  if( tTopo->tobLayer(detId) == 6 ) {
 	    k580->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
 	      k581->Fill( dx*1E4 );
@@ -4432,19 +4432,19 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    k604->Fill( dx*1E4 );
 	    k605->Fill( R, abs(dx)*1E4 );
 	    k606->Fill( R, xptch*1E4 );
-	    if( TECDetId(detId).ringNumber() < 7 )
+	    if( tTopo->tecRing(detId) < 7 )
 	      k607->Fill( xptch*1E4, abs(dx)*1E4 );
 	  }//pt
 
-	  if( TECDetId(detId).isBackPetal() )
+	  if( tTopo->tecIsBackPetal(detId) )
 	    k608->Fill( combinedPredictedState.globalPosition().x(), combinedPredictedState.globalPosition().y() );
 	  else
 	    k609->Fill( combinedPredictedState.globalPosition().x(), combinedPredictedState.globalPosition().y() );
 
-	  if( TECDetId(detId).ringNumber() == 1 ) {
+	  if( tTopo->tecRing(detId) == 1 ) {
 	    k610->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
-	      if( TECDetId(detId).isRPhi() )
+	      if( tTopo->isRPhi(detId) )
 		k611->Fill( dx*1E4 );
 	      else
 		k612->Fill( dx*1E4 );
@@ -4454,10 +4454,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k615->Fill( dx*1E4 );
 	  }//ring
 
-	  if( TECDetId(detId).ringNumber() == 2 ) {
+	  if( tTopo->tecRing(detId) == 2 ) {
 	    k620->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
-	      if( TECDetId(detId).isRPhi() )
+	      if( tTopo->isRPhi(detId) )
 		k621->Fill( dx*1E4 );
 	      else
 		k622->Fill( dx*1E4 );
@@ -4467,10 +4467,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k625->Fill( dx*1E4 );
 	  }//ring
 
-	  if( TECDetId(detId).ringNumber() == 3 ) {
+	  if( tTopo->tecRing(detId) == 3 ) {
 	    k630->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
-	      if( TECDetId(detId).isRPhi() )
+	      if( tTopo->isRPhi(detId) )
 		k631->Fill( dx*1E4 );
 	      else
 		k632->Fill( dx*1E4 );
@@ -4480,10 +4480,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k635->Fill( dx*1E4 );
 	  }//ring
 
-	  if( TECDetId(detId).ringNumber() == 4 ) {
+	  if( tTopo->tecRing(detId) == 4 ) {
 	    k640->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
-	      if( TECDetId(detId).isRPhi() )
+	      if( tTopo->isRPhi(detId) )
 		k641->Fill( dx*1E4 );
 	      else
 		k642->Fill( dx*1E4 );
@@ -4493,10 +4493,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k645->Fill( dx*1E4 );
 	  }//ring
 
-	  if( TECDetId(detId).ringNumber() == 5 ) {
+	  if( tTopo->tecRing(detId) == 5 ) {
 	    k650->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
-	      if( TECDetId(detId).isRPhi() )
+	      if( tTopo->isRPhi(detId) )
 		k651->Fill( dx*1E4 );
 	      else
 		k652->Fill( dx*1E4 );
@@ -4506,10 +4506,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k655->Fill( dx*1E4 );
 	  }//ring
 
-	  if( TECDetId(detId).ringNumber() == 6 ) {
+	  if( tTopo->tecRing(detId) == 6 ) {
 	    k660->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
-	      if( TECDetId(detId).isRPhi() )
+	      if( tTopo->isRPhi(detId) )
 		k661->Fill( dx*1E4 );
 	      else
 		k662->Fill( dx*1E4 );
@@ -4519,10 +4519,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k665->Fill( dx*1E4 );
 	  }//ring
 
-	  if( TECDetId(detId).ringNumber() == 7 ) {
+	  if( tTopo->tecRing(detId) == 7 ) {
 	    k670->Fill( logpt, abs(dx)*1E4 );
 	    if( pt > 4 ) {
-	      if( TECDetId(detId).isRPhi() )
+	      if( tTopo->isRPhi(detId) )
 		k671->Fill( dx*1E4 );
 	      else
 		k672->Fill( dx*1E4 );
@@ -4532,17 +4532,17 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	    if( pt > 12 ) k675->Fill( dx*1E4 );
 	  }//ring
 
-	  if( pt > 4 && TECDetId(detId).ringNumber() < 7 ) {
+	  if( pt > 4 && tTopo->tecRing(detId) < 7 ) {
 
-	    if( TECDetId(detId).wheelNumber() == 1 ) k681->Fill( dx*1E4 );
-	    if( TECDetId(detId).wheelNumber() == 2 ) k682->Fill( dx*1E4 );
-	    if( TECDetId(detId).wheelNumber() == 3 ) k683->Fill( dx*1E4 );
-	    if( TECDetId(detId).wheelNumber() == 4 ) k684->Fill( dx*1E4 );
-	    if( TECDetId(detId).wheelNumber() == 5 ) k685->Fill( dx*1E4 );
-	    if( TECDetId(detId).wheelNumber() == 6 ) k686->Fill( dx*1E4 );
-	    if( TECDetId(detId).wheelNumber() == 7 ) k687->Fill( dx*1E4 );
-	    if( TECDetId(detId).wheelNumber() == 8 ) k688->Fill( dx*1E4 );
-	    if( TECDetId(detId).wheelNumber() == 9 ) k689->Fill( dx*1E4 );
+	    if( tTopo->tecWheel(detId) == 1 ) k681->Fill( dx*1E4 );
+	    if( tTopo->tecWheel(detId) == 2 ) k682->Fill( dx*1E4 );
+	    if( tTopo->tecWheel(detId) == 3 ) k683->Fill( dx*1E4 );
+	    if( tTopo->tecWheel(detId) == 4 ) k684->Fill( dx*1E4 );
+	    if( tTopo->tecWheel(detId) == 5 ) k685->Fill( dx*1E4 );
+	    if( tTopo->tecWheel(detId) == 6 ) k686->Fill( dx*1E4 );
+	    if( tTopo->tecWheel(detId) == 7 ) k687->Fill( dx*1E4 );
+	    if( tTopo->tecWheel(detId) == 8 ) k688->Fill( dx*1E4 );
+	    if( tTopo->tecWheel(detId) == 9 ) k689->Fill( dx*1E4 );
 	  }
 
 	}//TEC
@@ -4602,13 +4602,13 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 
 	if( idbg && subDet == StripSubdetector::TEC ) {
 	  cout << "  TEC hit ";
-	  cout << ", side " << TECDetId(detId).side();
-	  cout << ", wheel " << TECDetId(detId).wheel();
-	  cout << ", ring " << TECDetId(detId).ring();
-	  cout << ", petal " << TECDetId(detId).petalNumber();
-	  cout << ", order " << TECDetId(detId).order();//1=back or 2=front
-	  cout << ", module " << TECDetId(detId).module();
-	  cout << ", stereo " << TECDetId(detId).isStereo();
+	  cout << ", side " << tTopo->tecSide(detId);
+	  cout << ", wheel " << tTopo->tecWheel(detId);
+	  cout << ", ring " << tTopo->tecRing(detId);
+	  cout << ", petal " << tTopo->tecPetalNumber(detId);
+	  cout << ", order " << tTopo->tecOrder(detId);//1=back or 2=front
+	  cout << ", module " << tTopo->module(detId);
+	  cout << ", stereo " << tTopo->isStereo(detId);
 	  cout << ", comp " << myGeomDet->components().size(); //always 0
 	  cout << endl;
 	}
@@ -4642,7 +4642,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 
 	if( subDet == StripSubdetector::TIB ) {
 
-	  if(TIBDetId(detId).isRPhi() ){
+	  if( tTopo->isRPhi(detId) ){
 
 	    if( tTopo->tibLayer(detId) == 1 ) {
 
@@ -4686,9 +4686,9 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 
 	if( subDet == StripSubdetector::TOB ) {
 
-	  if( TOBDetId(detId).isRPhi() ){
+	  if( tTopo->isRPhi(detId) ){
 
-	    if( TOBDetId(detId).layer() == 1 ) {
+	    if( tTopo->tobLayer(detId) == 1 ) {
 
 	      nTOB1++;
 	      //xTOB1 = gX;
@@ -4697,7 +4697,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	      //phiNTOB1 = phiN;
 	    }
 
-	    if( TOBDetId(detId).layer() == 2 ) {
+	    if( tTopo->tobLayer(detId) == 2 ) {
 
 	      nTOB2++;
 	      //xTOB2 = gX;
@@ -4706,7 +4706,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	      //phiNTOB2 = phiN;
 	    }
 
-	    if( TOBDetId(detId).layer() == 3 ) {
+	    if( tTopo->tobLayer(detId) == 3 ) {
 
 	      nTOB3++;
 	      xTOB3 = gX;
@@ -4715,7 +4715,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	      //phiNTOB3 = phiN;
 	    }
 
-	    if( TOBDetId(detId).layer() == 4 ) {
+	    if( tTopo->tobLayer(detId) == 4 ) {
 
 	      nTOB4++;
 	      xTOB4 = gX;
@@ -4724,7 +4724,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	      phiNTOB4 = phiN;
 	    }
 
-	    if( TOBDetId(detId).layer() == 5 ) {
+	    if( tTopo->tobLayer(detId) == 5 ) {
 
 	      nTOB5++;
 	      xTOB5 = gX;
@@ -4733,7 +4733,7 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	      phiNTOB5 = phiN;
 	    }
 
-	    if( TOBDetId(detId).layer() == 6 ) {
+	    if( tTopo->tobLayer(detId) == 6 ) {
 
 	      nTOB6++;
 	      xTOB6 = gX;
@@ -4748,10 +4748,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 
 	if( subDet == StripSubdetector::TEC ) {
 
-	  if( TECDetId(detId).isRPhi() ){
+	  if( tTopo->isRPhi(detId) ){
 
-	    int is = TECDetId(detId).side();//1..2
-	    int iw = TECDetId(detId).wheel();//1..9
+	    int is = tTopo->tecSide(detId);//1..2
+	    int iw = tTopo->tecWheel(detId);//1..9
 
 	    if( nTEC[is][iw] == 0 ) {//take first hit per wheel
 	      nTEC[is][iw]++;
@@ -7857,27 +7857,27 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 
 	    if( subDet == StripSubdetector::TIB ) {
 
-	      if( TIBDetId( detId ).layer() == 1 && TIBDetId(detId).isRPhi() ) {
+	      if( tTopo->tibLayer(detId) == 1 && tTopo->isRPhi(detId) ) {
 		u310->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TIBDetId( detId ).layer() == 1 && TIBDetId(detId).isStereo() ) {
+	      if( tTopo->tibLayer(detId) == 1 && tTopo->isStereo(detId) ) {
 		u320->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TIBDetId( detId ).layer() == 2 && TIBDetId(detId).isRPhi() ) {
+	      if( tTopo->tibLayer(detId) == 2 && tTopo->isRPhi(detId) ) {
 		u330->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TIBDetId( detId ).layer() == 2 && TIBDetId(detId).isStereo() ) {
+	      if( tTopo->tibLayer(detId) == 2 && tTopo->isStereo(detId) ) {
 		u340->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TIBDetId( detId ).layer() == 3 ) {
+	      if( tTopo->tibLayer(detId) == 3 ) {
 		u350->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TIBDetId( detId ).layer() == 4 ) {
+	      if( tTopo->tibLayer(detId) == 4 ) {
 		u360->Fill( resid*1E4 );
 	      }//layer
 
@@ -7885,10 +7885,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 
 	    if( subDet == StripSubdetector::TID ) {
 
-	      if( TIDDetId(detId).side() == 1 ){
+	      if( tTopo->tidSide(detId) == 1 ){
 
-		if( TIDDetId(detId).diskNumber() == 1 ){
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidWheel(detId) == 1 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u410->Fill( resid*1E4 );
 		  }
 		  else {
@@ -7896,8 +7896,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TIDDetId(detId).diskNumber() == 2 ){
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidWheel(detId) == 2 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u412->Fill( resid*1E4 );
 		  }
 		  else {
@@ -7905,8 +7905,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TIDDetId(detId).diskNumber() == 3 ){
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidWheel(detId) == 3 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u414->Fill( resid*1E4 );
 		  }
 		  else {
@@ -7914,8 +7914,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TIDDetId(detId).ringNumber() == 1 ) {
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidRing(detId) == 1 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u430->Fill( resid*1E4 );
 		  }
 		  else {
@@ -7923,8 +7923,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TIDDetId(detId).ringNumber() == 2 ) {
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidRing(detId) == 2 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u432->Fill( resid*1E4 );
 		  }
 		  else {
@@ -7932,8 +7932,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TIDDetId(detId).ringNumber() == 3 ) {
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidRing(detId) == 3 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u434->Fill( resid*1E4 );
 		  }
 		  else {
@@ -7944,8 +7944,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 	      }//z side 1
 	      else { // other z side
 
-		if( TIDDetId(detId).diskNumber() == 1 ){
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidWheel(detId) == 1 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u420->Fill( resid*1E4 );
 		  }
 		  else {
@@ -7953,8 +7953,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TIDDetId(detId).diskNumber() == 2 ){
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidWheel(detId) == 2 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u422->Fill( resid*1E4 );
 		  }
 		  else {
@@ -7962,8 +7962,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TIDDetId(detId).diskNumber() == 3 ){
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidWheel(detId) == 3 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u424->Fill( resid*1E4 );
 		  }
 		  else {
@@ -7971,8 +7971,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TIDDetId(detId).ringNumber() == 1 ) {
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidRing(detId) == 1 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u440->Fill( resid*1E4 );
 		  }
 		  else {
@@ -7980,8 +7980,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TIDDetId(detId).ringNumber() == 2 ) {
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidRing(detId) == 2 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u442->Fill( resid*1E4 );
 		  }
 		  else {
@@ -7989,8 +7989,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TIDDetId(detId).ringNumber() == 3 ) {
-		  if( TIDDetId(detId).isRPhi() ) {
+		if( tTopo->tidRing(detId) == 3 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u444->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8002,35 +8002,35 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 
 	    if( subDet == StripSubdetector::TOB ) {
 
-	      if( TOBDetId( detId ).layer() == 1 && TOBDetId(detId).isRPhi() ) {
+	      if( tTopo->tobLayer(detId) == 1 && tTopo->isRPhi(detId) ) {
 		u510->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TOBDetId( detId ).layer() == 1 && TOBDetId(detId).isStereo() ) {
+	      if( tTopo->tobLayer(detId) == 1 && tTopo->isStereo(detId) ) {
 		u520->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TOBDetId( detId ).layer() == 2 && TOBDetId(detId).isRPhi() ) {
+	      if( tTopo->tobLayer(detId) == 2 && tTopo->isRPhi(detId) ) {
 		u530->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TOBDetId( detId ).layer() == 2 && TOBDetId(detId).isStereo() ) {
+	      if( tTopo->tobLayer(detId) == 2 && tTopo->isStereo(detId) ) {
 		u540->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TOBDetId( detId ).layer() == 3 ) {
+	      if( tTopo->tobLayer(detId) == 3 ) {
 		u550->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TOBDetId( detId ).layer() == 4 ) {
+	      if( tTopo->tobLayer(detId) == 4 ) {
 		u560->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TOBDetId( detId ).layer() == 5 ) {
+	      if( tTopo->tobLayer(detId) == 5 ) {
 		u570->Fill( resid*1E4 );
 	      }//layer
 
-	      if( TOBDetId( detId ).layer() == 6 ) {
+	      if( tTopo->tobLayer(detId) == 6 ) {
 		u580->Fill( resid*1E4 );
 	      }//layer
 
@@ -8038,10 +8038,10 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 
 	    if( subDet == StripSubdetector::TEC ) {
 
-	      if( TECDetId(detId).side() == 1 ){
+	      if( tTopo->tecSide(detId) == 1 ){
 
-		if( TECDetId(detId).wheelNumber() == 1 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 1 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u610->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8049,8 +8049,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 2 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 2 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u612->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8058,8 +8058,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 3 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 3 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u614->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8067,8 +8067,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 4 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 4 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u616->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8076,8 +8076,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 5 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 5 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u618->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8085,8 +8085,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 6 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 6 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u620->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8094,8 +8094,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 7 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 7 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u622->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8103,8 +8103,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 8 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 8 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u624->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8112,8 +8112,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 9 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 9 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u626->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8121,8 +8121,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 1 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 1 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u630->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8130,8 +8130,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 2 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 2 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u632->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8139,8 +8139,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 3 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 3 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u634->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8148,8 +8148,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 4 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 4 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u636->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8157,8 +8157,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 5 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 5 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u638->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8166,8 +8166,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 6 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 6 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u640->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8175,8 +8175,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 7 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 7 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u642->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8188,8 +8188,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 
 	      else { // other z side
 
-		if( TECDetId(detId).wheelNumber() == 1 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 1 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u650->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8197,8 +8197,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 2 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 2 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u652->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8206,8 +8206,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 3 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 3 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u654->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8215,8 +8215,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 4 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 4 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u656->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8224,8 +8224,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 5 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 5 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u658->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8233,8 +8233,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 6 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 6 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u660->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8242,8 +8242,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 7 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 7 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u662->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8251,8 +8251,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 8 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 8 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u664->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8260,8 +8260,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).wheelNumber() == 9 ){
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecWheel(detId) == 9 ){
+		  if( tTopo->isRPhi(detId) ) {
 		    u666->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8269,8 +8269,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 1 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 1 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u670->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8278,8 +8278,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 2 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 2 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u672->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8287,8 +8287,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 3 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 3 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u674->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8296,8 +8296,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 4 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 4 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u676->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8305,8 +8305,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 5 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 5 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u678->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8314,8 +8314,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 6 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 6 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u680->Fill( resid*1E4 );
 		  }
 		  else {
@@ -8323,8 +8323,8 @@ void Pxl::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup // , e
 		  }
 		}
 
-		if( TECDetId(detId).ringNumber() == 7 ) {
-		  if( TECDetId(detId).isRPhi() ) {
+		if( tTopo->tecRing(detId) == 7 ) {
+		  if( tTopo->isRPhi(detId) ) {
 		    u682->Fill( resid*1E4 );
 		  }
 		  else {
