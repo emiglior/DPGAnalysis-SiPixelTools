@@ -34,32 +34,7 @@ SiPixelLorentzAngleDBReader::SiPixelLorentzAngleDBReader( const edm::ParameterSe
   tagLabel_( iConfig.getUntrackedParameter<std::string>("label"," ")) {
 
   cout<<" LA Reader "<<printdebug_<<endl;
-
-//   const unsigned int bpi1[9] = {
-//     302056472, 302056476, 302056212, 302055700, 302055708, 302060308, 302060312,
-//     302059800, 302059548
-//   }; 
-//   for(int i=0; i<9; ++i) l1New.push_back(bpi1[i]);
-//   const unsigned int bpi2[18] = {
-//     302123040, 302122772, 302122776, 302122516, 302122264, 302122272,
-//     302122008, 302121752, 302121496, 302121240, 302121244, 302128920,
-//     302128924, 302129176, 302129180, 302129184, 302128404, 302128408
-//   }; 
-//   for(int i=0; i<18; ++i) l2New.push_back(bpi2[i]);
-//   const unsigned int bpi3[14] = {
-//     302189088, 302188820, 302188832, 302188052, 302187552, 302197784,
-//     302197532, 302197536, 302197016, 302196244, 302195232, 302188824,
-//     302186772, 302186784
-//   }; 
-//   for(int i=0; i<14; ++i) l3New.push_back(bpi3[i]);
-
-//   const unsigned int bmi2[1] = {302121992};
-//   for(int i=0; i<1; ++i) l2New.push_back(bmi2[i]);
-//   const unsigned int bmi3[6] = {
-//     302188552, 302187280, 302186768, 302186764, 302186756, 302197516
-//   };
-//   for(int i=0; i<6; ++i) l3New.push_back(bmi3[i]);
-   cout<<" 2 "<<endl;
+  cout<<" 2 "<<endl;
 
  }
 
@@ -99,10 +74,9 @@ void SiPixelLorentzAngleDBReader::analyze( const edm::Event& e, const edm::Event
    }
  }
 
-  // edm::Service<TFileService> fs;
-
-  // LorentzAngleBarrel_ = fs->make<TH1F>("LorentzAngleBarrelPixel","LorentzAngleBarrelPixel",150,0,0.15);
-  // LorentzAngleForward_= fs->make<TH1F>("LorentzAngleForwardPixel","LorentzAngleForwardPixel",150,0,0.15);
+  edm::Service<TFileService> fs;
+  LorentzAngleBarrel_ = fs->make<TH1F>("LorentzAngleBarrelPixel","LorentzAngleBarrelPixel",150,0,0.15);
+  LorentzAngleForward_= fs->make<TH1F>("LorentzAngleForwardPixel","LorentzAngleForwardPixel",150,0,0.15);
 
   // LABPixL1_[0] = fs->make<TH1F>("LABPixL1Z1","LorentzAngleBPix Lay1 Z1",150,0,0.15);
   // LABPixL1_[1] = fs->make<TH1F>("LABPixL1Z2","LorentzAngleBPix Lay1 Z2",150,0,0.15);
@@ -143,6 +117,7 @@ void SiPixelLorentzAngleDBReader::analyze( const edm::Event& e, const edm::Event
 
   std::map<unsigned int,float> detid_la= SiPixelLorentzAngle_->getLorentzAngles();
   std::map<unsigned int,float>::const_iterator it;
+  int countBPix=0, countFPix=0, countEPix=0;
 
   //double la1New=-1. , la2New=-1. , la3New=-1.;
   bool l1z[8]={false,false,false,false,false,false,false,false};
@@ -160,7 +135,8 @@ void SiPixelLorentzAngleDBReader::analyze( const edm::Event& e, const edm::Event
     auto subdet   = DetId(detid).subdetId();
 
     if(subdet == static_cast<int>(PixelSubdetector::PixelBarrel)) {  // BPix
-      //LorentzAngleBarrel_->Fill(la);
+      countBPix++;
+      LorentzAngleBarrel_->Fill(la);
       
       unsigned int layerC = tTopo->pxbLayer(detid);
       // Barrel ladder id 1-20,32,44.
@@ -243,7 +219,8 @@ void SiPixelLorentzAngleDBReader::analyze( const edm::Event& e, const edm::Event
       } // end print if
 
     } else if(subdet == static_cast<int>(PixelSubdetector::PixelEndcap)){
-      //LorentzAngleForward_->Fill(la);
+      
+      LorentzAngleForward_->Fill(la);
 
       unsigned int disk=tTopo->pxfDisk(detid);   //1,2,3
       unsigned int blade=tTopo->pxfBlade(detid); //1-24
@@ -251,12 +228,8 @@ void SiPixelLorentzAngleDBReader::analyze( const edm::Event& e, const edm::Event
       unsigned int panel=tTopo->pxfPanel(detid);   //sizd=1 for -z, 2 for +z
       unsigned int moduleF=tTopo->pxfModule(detid); //
       
-      //PXFDetId pdetId = PXFDetId(detid);       
-      //int disk=pdetId.disk(); //1,2,3
-      //int blade=pdetId.blade(); //1-24
-      //int moduleF=pdetId.module(); //
-      //int side=pdetId.side(); //size=1 for -z, 2 for +z
-      //int panel=pdetId.panel(); //panel=1
+      if(disk<=8) countFPix++;
+      else countEPix++;
 
       if(printdebug_) {
 	std::cout<<detid<<" FPix - disk "<<disk<<" blade "<<blade<<" side "<<side
@@ -270,13 +243,13 @@ void SiPixelLorentzAngleDBReader::analyze( const edm::Event& e, const edm::Event
 
 
     } else {
-      if(printdebug_)
-	std::cout  << "Unknown det - detid " << detid<<" "<< " Lorentz angle  " << la  << std::endl;
+      //if(printdebug_)
+      //std::cout  << "Unknown det - detid " << detid<<" "<< " Lorentz angle  " << la  << std::endl;
     } // end b/fpix if 
 
   }  // end for loop 
 
-  //std::cout<<" LA for new modules "<<la1New<<" "<<la2New<<" "<<la3New<<std::endl;
+  std::cout<<" Modules "<<countBPix<<" TBPX "<<countFPix<<" TFPX "<<countEPix<<" TEPX "<<std::endl;
 }
 
 //define this as a plug-in

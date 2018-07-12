@@ -46,10 +46,6 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
             record = cms.string('SiPixelLorentzAngleRcd'),
             tag = cms.string('SiPixelLorentzAngle_2017_test')
             ),
-        #        cms.PSet(
-        #            record = cms.string('SiPixelLorentzAngleSimRcd'),
-        #            tag = cms.string('SiPixelLorentzAngleSim_phase2_v1')
-        #        ),
         )
                                           )
 
@@ -65,8 +61,8 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
 ###### LORENTZ ANGLE OBJECT ######
 process.SiPixelLorentzAngle = cms.EDAnalyzer("SiPixelLorentzAngleDBLoader",
                                              # common input for all bpix/fpix
-                                             bPixLorentzAnglePerTesla = cms.untracked.double(0.1),
-                                             fPixLorentzAnglePerTesla = cms.untracked.double(0.1),
+                                             bPixLorentzAnglePerTesla = cms.untracked.double(0.2),
+                                             fPixLorentzAnglePerTesla = cms.untracked.double(0.2),
                                              # enter -9999 if individual input
                                              #bPixLorentzAnglePerTesla = cms.untracked.double(-9999.),
                                              #fPixLorentzAnglePerTesla = cms.untracked.double(-9999.),
@@ -86,19 +82,15 @@ process.SiPixelLorentzAngle = cms.EDAnalyzer("SiPixelLorentzAngleDBLoader",
         ),
                                              
                                              # List of Exceptions
-                                             ModuleParameters = cms.untracked.VPSet(
-        cms.PSet( rawid=cms.uint32(352588804), angle=cms.double(0.1) ),
-        ),
+                                             ModuleParameters = cms.untracked.VPSet(),
                                              #in case lorentz angle values for bpix should be read from file -> not implemented yet
                                              useFile = cms.bool(False),
                                              record = cms.untracked.string('SiPixelLorentzAngleRcd'),  
-                                             #record = cms.untracked.string('SiPixelLorentzAngleSimRcd'),  
                                              fileName = cms.string('lorentzFit.txt')	
                                              )
 
 
 process.p = cms.Path(
-#    process.SiPixelLorentzAngleSim
     process.SiPixelLorentzAngle
 )
 

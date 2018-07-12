@@ -19,9 +19,6 @@ process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(1)
 )
 process.source = cms.Source("EmptySource",
-#    lastRun = cms.untracked.uint32(1),
-#    timetype = cms.string('runnumber'),
-#    interval = cms.uint32(1),
     firstRun = cms.untracked.uint32(1)
 )
 
@@ -42,23 +39,19 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2017_realistic', '
 
 
 # DB stuff
-useLocalDB = False
+useLocalDB = True
 if useLocalDB :
   from CondCore.CondDB.CondDB_cfi import *
   myCondDB = CondDB.clone( connect = cms.string('sqlite_file:SiPixelLorentzAngle_2017.db') )
   process.DBReader = cms.ESSource("PoolDBESSource",
                                   myCondDB,
-                                  DBParameters = cms.PSet(messageLevel
-                                                          = cms.untracked.int32(0),
-                                                          authenticationPath = cms.untracked.string('')
-                                                          ),
                                   toGet = cms.VPSet(cms.PSet(record =
-                                                             cms.string("SiPixelLorentzAngleRcd"),                                                             
+                                                             cms.string("SiPixelLorentzAngleRcd"),                                               
                                                              tag = cms.string("SiPixelLorentzAngle_2017_test")
                                                              ),
                                                      ),
                                   ) # end process
-  process.es_prefer_DBReader = cms.ESPrefer("PoolDBESSource","DBReader")
+process.es_prefer_DBReader = cms.ESPrefer("PoolDBESSource","DBReader")
 # end if
    
 
@@ -68,14 +61,6 @@ process.LorentzAngleReader = cms.EDAnalyzer("SiPixelLorentzAngleDBReader",
     useSimRcd = cms.bool(False)                                    
 )
 
-#process.LorentzAngleSimReader = cms.EDAnalyzer("SiPixelLorentzAngleDBReader",
-#    printDebug = cms.untracked.bool(False),
-#    useSimRcd = cms.bool(True)                                             
-#)
+#process.p = cms.Path(process.LorentzAngleReader)
 
-#process.p = cms.Path(process.LorentzAngleSimReader)
-process.p = cms.Path(process.LorentzAngleReader)
-
-#process.test = cms.EDAnalyzer( "SiPixelDetsPhase2")
-#process.ana_seq = cms.Sequence(process.test)
-#process.p = cms.Path(process.ana_seq)
+process.Tracer = cms.Service("Tracer")
