@@ -15,7 +15,8 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "TROOT.h"
 #include "TFile.h"
-#include "TH2F.h"
+#include "TH1F.h"
+#include "TProfile2D.h"
 
 
 //
@@ -35,6 +36,9 @@
     TH1F* LorentzAngleBarrel_;
     TH1F* LorentzAngleForward_;
     TH1F *LABPixL1_[8], *LABPixL2_[8], *LABPixL3_[8], *LABPixL4_[8];
+    TProfile2D *LorentzAngleMapTBPX_;
+    TProfile2D *LorentzAngleMapTPFX_;
+    TProfile2D *LorentzAngleMapTPEX_;
 
     bool useSimRcd_;
     std::string tagLabel_;

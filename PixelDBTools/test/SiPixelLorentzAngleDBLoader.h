@@ -48,8 +48,10 @@ class SiPixelLorentzAngleDBLoader : public edm::EDAnalyzer
   Parameters FPixParameters_;
   Parameters ModuleParameters_;
 
-  float bPixLorentzAnglePerTesla_;
-  float fPixLorentzAnglePerTesla_;
+  float bPixLorentzAnglePerTesla1x2_;
+  float bPixLorentzAnglePerTesla2x2_;
+  float fPixLorentzAnglePerTesla1x2_;
+  float fPixLorentzAnglePerTesla2x2_;
 
   std::string fileName_;
   bool useFile_;

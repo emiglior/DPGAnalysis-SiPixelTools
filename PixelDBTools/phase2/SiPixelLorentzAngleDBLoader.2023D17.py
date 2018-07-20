@@ -51,20 +51,13 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
         )
                                           )
 
-#FPix_300V_RNG1_PNL1 = 0.0805
-#BPIX_LAYER1=0.0595
-#BPIX_LAYER_2_MODULE_1_4=0.0765
-#BPIX_LAYER_2_MODULE_5_8=0.0805
-#BPIX_LAYER_3_MODULE_1_4=0.0864
-#BPIX_LAYER_3_MODULE_5_8=0.0929
-#BPIX_LAYER_4_MODULE_1_4=0.0961
-#BPIX_LAYER_4_MODULE_5_8=0.1036
-
 ###### LORENTZ ANGLE OBJECT ######
 process.SiPixelLorentzAngle = cms.EDAnalyzer("SiPixelLorentzAngleDBLoader",
                                              # common input for all bpix/fpix
-                                             bPixLorentzAnglePerTesla = cms.untracked.double(0.2),
-                                             fPixLorentzAnglePerTesla = cms.untracked.double(0.2),
+                                             bPixLorentzAnglePerTesla1x2 = cms.untracked.double(0.046),
+                                             bPixLorentzAnglePerTesla2x2 = cms.untracked.double(0.105),
+                                             fPixLorentzAnglePerTesla1x2 = cms.untracked.double(0.046),
+                                             fPixLorentzAnglePerTesla2x2 = cms.untracked.double(0.105),
                                              # enter -9999 if individual input
                                              #bPixLorentzAnglePerTesla = cms.untracked.double(-9999.),
                                              #fPixLorentzAnglePerTesla = cms.untracked.double(-9999.),

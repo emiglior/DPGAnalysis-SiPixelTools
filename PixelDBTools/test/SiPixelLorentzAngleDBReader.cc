@@ -2,13 +2,11 @@
 #include "CondFormats/DataRecord/interface/SiPixelLorentzAngleRcd.h"
 #include "CondFormats/DataRecord/interface/SiPixelLorentzAngleSimRcd.h"
 #include "Geometry/TrackerGeometryBuilder/interface/PixelGeomDetUnit.h"
+#include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 #include "DataFormats/SiPixelDetId/interface/PixelSubdetector.h"
 #include "DataFormats/DetId/interface/DetId.h"
 
-#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h" //???
-
-#include "Geometry/TrackerGeometryBuilder/interface/PixelGeomDetUnit.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 //#include "DataFormats/SiPixelDetId/interface/PixelBarrelName.h"
@@ -43,40 +41,43 @@ SiPixelLorentzAngleDBReader::~SiPixelLorentzAngleDBReader(){}
 
 void SiPixelLorentzAngleDBReader::analyze( const edm::Event& e, const edm::EventSetup& iSetup) {
 
-  cout<<" 3 "<<endl;
   //Retrieve tracker topology from geometry
   edm::ESHandle<TrackerTopology> tTopo;
   //iSetup.get<IdealGeometryRecord>().get(tTopo);
   iSetup.get<TrackerTopologyRcd>().get(tTopo);
   //const TrackerTopology* tt = tTopo.product()
 
-  cout<<" 4 "<<endl;
+  // geometry setup
+  edm::ESHandle<TrackerGeometry> tGeometry; 
+  iSetup.get<TrackerDigiGeometryRecord>().get(tGeometry);
+  const TrackerGeometry*  tTracker = &(*tGeometry);
+  
+  edm::ESHandle<SiPixelLorentzAngle> SiPixelLorentzAngle_; 
 
- edm::ESHandle<SiPixelLorentzAngle> SiPixelLorentzAngle_; 
-
-  cout<<" 5 "<<endl;
-
- if(useSimRcd_ == true) {
-   iSetup.get<SiPixelLorentzAngleSimRcd>().get(SiPixelLorentzAngle_);
-   edm::LogInfo("SiPixelLorentzAngleReader") <<" Show LA for reconstruction "<<std::endl;
-   std::cout<<" Show LA for simulations "<<std::endl;
-   
- } else {
-   //edm::LogInfo("SiPixelLorentzAngleReader") <<" Show LA for reconstruction "<<std::endl;
-   std::cout<<" Show LA for reconstruction, use label = "<<tagLabel_<<std::endl;
-   // get the payloads with labels
-   if(tagLabel_=="fromAlignment") {
-     iSetup.get<SiPixelLorentzAngleRcd>().get("fromAlignment",SiPixelLorentzAngle_);
-   } else if(tagLabel_=="forWidth") {
-     iSetup.get<SiPixelLorentzAngleRcd>().get("forWidth",SiPixelLorentzAngle_);
-   } else {  // the nomral no label one 
-     iSetup.get<SiPixelLorentzAngleRcd>().get(SiPixelLorentzAngle_);
-   }
+  if(useSimRcd_ == true) {
+    iSetup.get<SiPixelLorentzAngleSimRcd>().get(SiPixelLorentzAngle_);
+    edm::LogInfo("SiPixelLorentzAngleReader") <<" Show LA for reconstruction "<<std::endl;
+    std::cout<<" Show LA for simulations "<<std::endl;
+    
+  } else {
+    //edm::LogInfo("SiPixelLorentzAngleReader") <<" Show LA for reconstruction "<<std::endl;
+    std::cout<<" Show LA for reconstruction, use label = "<<tagLabel_<<std::endl;
+    // get the payloads with labels
+    if(tagLabel_=="fromAlignment") {
+      iSetup.get<SiPixelLorentzAngleRcd>().get("fromAlignment",SiPixelLorentzAngle_);
+    } else if(tagLabel_=="forWidth") {
+      iSetup.get<SiPixelLorentzAngleRcd>().get("forWidth",SiPixelLorentzAngle_);
+    } else {  // the nomral no label one 
+      iSetup.get<SiPixelLorentzAngleRcd>().get(SiPixelLorentzAngle_);
+    }
  }
 
   edm::Service<TFileService> fs;
-  LorentzAngleBarrel_ = fs->make<TH1F>("LorentzAngleBarrelPixel","LorentzAngleBarrelPixel",150,0,0.15);
-  LorentzAngleForward_= fs->make<TH1F>("LorentzAngleForwardPixel","LorentzAngleForwardPixel",150,0,0.15);
+  LorentzAngleBarrel_ = fs->make<TH1F>("LorentzAngleBarrelPixel","LorentzAngleBarrelPixel",  300,0,0.30);
+  LorentzAngleForward_= fs->make<TH1F>("LorentzAngleForwardPixel","LorentzAngleForwardPixel",300,0,0.30);
+  LorentzAngleMapTBPX_   = fs->make<TProfile2D>("LorentzAngleMapTPBX", "LorentzAngleMapTBPX",  50,   0., 25,  40,   0., 20.);
+  LorentzAngleMapTPFX_   = fs->make<TProfile2D>("LorentzAngleMapTPFX", "LorentzAngleMapTPFX", 300, -30., 30, 300, -30., 30.);
+  LorentzAngleMapTPEX_   = fs->make<TProfile2D>("LorentzAngleMapTPEX", "LorentzAngleMapTPEX", 300, -30., 30, 300, -30., 30.);
 
   // LABPixL1_[0] = fs->make<TH1F>("LABPixL1Z1","LorentzAngleBPix Lay1 Z1",150,0,0.15);
   // LABPixL1_[1] = fs->make<TH1F>("LABPixL1Z2","LorentzAngleBPix Lay1 Z2",150,0,0.15);
@@ -143,6 +144,10 @@ void SiPixelLorentzAngleDBReader::analyze( const edm::Event& e, const edm::Event
       unsigned int ladderC = tTopo->pxbLadder(detid);
       // Barrel Z-index=1,8
       unsigned int moduleC = tTopo->pxbModule(detid);
+
+      const PixelGeomDetUnit * pixelGeomDetUnit = static_cast<const PixelGeomDetUnit*>( tTracker->idToDet(detid) );
+      GlobalPoint GP0 = pixelGeomDetUnit->surface().toGlobal(LocalPoint(0,0,0));
+      LorentzAngleMapTBPX_->Fill(GP0.z(), GP0.perp(), la);
 
       //PXBDetId pdetId = PXBDetId(detid);
       //unsigned int detTypeP=pdetId.det();
@@ -227,6 +232,15 @@ void SiPixelLorentzAngleDBReader::analyze( const edm::Event& e, const edm::Event
       unsigned int side=tTopo->pxfSide(detid);   //sizd=1 for -z, 2 for +z
       unsigned int panel=tTopo->pxfPanel(detid);   //sizd=1 for -z, 2 for +z
       unsigned int moduleF=tTopo->pxfModule(detid); //
+
+      const PixelGeomDetUnit * pixelGeomDetUnit = static_cast<const PixelGeomDetUnit*>( tTracker->idToDet(detid) );
+      GlobalPoint GP0 = pixelGeomDetUnit->surface().toGlobal(LocalPoint(0,0,0));
+
+      if(disk<=8) {
+	LorentzAngleMapTPFX_->Fill(GP0.x(), GP0.y(), la);
+      } else {
+	LorentzAngleMapTPEX_->Fill(GP0.x(), GP0.y(), la);
+      }
       
       if(disk<=8) countFPix++;
       else countEPix++;

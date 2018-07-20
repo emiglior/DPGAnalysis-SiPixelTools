@@ -8,6 +8,7 @@
 
 #include "Geometry/TrackerGeometryBuilder/interface/PixelGeomDetUnit.h"
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h" // 
+#include "Geometry/TrackerGeometryBuilder/interface/RectangularPixelTopology.h"
 
 #include "CondCore/DBOutputService/interface/PoolDBOutputService.h"
 #include "CondFormats/SiPixelObjects/interface/SiPixelLorentzAngle.h"
@@ -35,9 +36,13 @@ SiPixelLorentzAngleDBLoader::SiPixelLorentzAngleDBLoader(edm::ParameterSet const
   BPixParameters_   = conf_.getUntrackedParameter<Parameters>("BPixParameters");
   FPixParameters_   = conf_.getUntrackedParameter<Parameters>("FPixParameters");
   ModuleParameters_ = conf_.getUntrackedParameter<Parameters>("ModuleParameters");
-  bPixLorentzAnglePerTesla_ = (float)conf_.getUntrackedParameter<double>("bPixLorentzAnglePerTesla",
+  bPixLorentzAnglePerTesla1x2_ = (float)conf_.getUntrackedParameter<double>("bPixLorentzAnglePerTesla1x2",
 								-9999.);
-  fPixLorentzAnglePerTesla_ = (float)conf_.getUntrackedParameter<double>("fPixLorentzAnglePerTesla",
+  bPixLorentzAnglePerTesla2x2_ = (float)conf_.getUntrackedParameter<double>("bPixLorentzAnglePerTesla2x2",
+								-9999.);
+  fPixLorentzAnglePerTesla1x2_ = (float)conf_.getUntrackedParameter<double>("fPixLorentzAnglePerTesla1x2",
+								-9999.);
+  fPixLorentzAnglePerTesla2x2_ = (float)conf_.getUntrackedParameter<double>("fPixLorentzAnglePerTesla2x2",
 								-9999.);
 }
 
@@ -62,22 +67,29 @@ void SiPixelLorentzAngleDBLoader::analyze(const edm::Event& e, const edm::EventS
         // Initialize SiPixelCoordinates, used for the individual LA selection and printout
 	SiPixelCoordinates coord;
 	coord.init(es);
-	
+
+	//	edm::ESHandle<TrackerTopology> tTopo;
+	//	es.get<TrackerTopologyRcd>().get(tTopo);
+
+
         //Retrieve old style tracker geometry from geometry
-	edm::ESHandle<TrackerGeometry> pDD;
-	es.get<TrackerDigiGeometryRecord>().get( pDD );
-	std::cout<<" There are "<<pDD->detUnits().size() <<" detectors (old)"<<std::endl;
+	edm::ESHandle<TrackerGeometry> tGeometry;
+	es.get<TrackerDigiGeometryRecord>().get( tGeometry);
+	std::cout<<" There are "<<tGeometry->detUnits().size() <<" detectors (old)"<<std::endl;
 	
-	//for(TrackerGeometry::DetContainer::const_iterator it = pDD->detUnits().begin(); 
-	for(auto it = pDD->detUnits().begin(); it != pDD->detUnits().end(); it++){
+	//for(TrackerGeometry::DetContainer::const_iterator it = tGeometry->detUnits().begin(); 
+	for(auto it = tGeometry->detUnits().begin(); it != tGeometry->detUnits().end(); it++){
 	  
 	  // for phase2 this does not select the inner tracker module but all modules 
-	  if( dynamic_cast<PixelGeomDetUnit const*>((*it))!=0) {
+	  const PixelGeomDetUnit * pixelGeomDetUnit = dynamic_cast<PixelGeomDetUnit const*>(*it);
+	  if( pixelGeomDetUnit!=0 ) {
 	    const DetId detid = (*it)->geographicalId();
 	    auto detType= detid.det(); // det type, tracker=1
 	    auto  rawId = detid.rawId();
 	    int found = 0;
-	    
+
+	    const PixelTopology * pixTopo            = &(pixelGeomDetUnit->specificTopology());	    	   
+
 	    //cout<<detType<<endl;
 	    // fill bpix values for LA 
 	    if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelBarrel)) {
@@ -85,11 +97,20 @@ void SiPixelLorentzAngleDBLoader::analyze(const edm::Event& e, const edm::EventS
 	      // 
 	      cout <<" pixel barrel:" 
 		   <<" layer="<<coord.layer(rawId)<<" ladder="<<coord.ladder(rawId)<<" module="<<coord.module(rawId) 
-		   <<"  rawId=" << rawId;
+		   <<" rawId=" << rawId;
 
 	      // use a commmon value (e.g. for MC)
-	      if(bPixLorentzAnglePerTesla_ != -9999.) {  // use common value for all 
-		cout<<" LA = "<< bPixLorentzAnglePerTesla_<<" common for all bpix"<<endl;
+	      // choose here if 1x2 or 2x2
+	      float bPixLorentzAnglePerTesla_ = -9999.; 
+	      if ( pixTopo->rocsX() == 1 ) {
+		bPixLorentzAnglePerTesla_ = bPixLorentzAnglePerTesla1x2_ ; 
+	      } else if ( pixTopo->rocsX() == 2 ) {
+		bPixLorentzAnglePerTesla_ = bPixLorentzAnglePerTesla2x2_ ; 
+	      } else {
+		cout << "UNKNOWN rocsX" << endl;
+ 	      } 
+	      if(bPixLorentzAnglePerTesla_ != -9999. ) {  // use common value for all 
+		cout<<" LA = "<< bPixLorentzAnglePerTesla_ << endl;		
 		if(!LorentzAngle->putLorentzAngle(detid.rawId(),bPixLorentzAnglePerTesla_))
 		  cout<<"[SiPixelLorentzAngleDB::analyze] ERROR!: detid already exists"<<std::endl;
 		
@@ -140,6 +161,13 @@ void SiPixelLorentzAngleDBLoader::analyze(const edm::Event& e, const edm::EventS
 		   <<" side="<<coord.side(detid)<<" disk=" << coord.disk(detid)<<" blade(ring)="<<coord.blade(detid)<<" panel="<< coord.panel(detid) << "  module=" << coord.module(detid) << "  rawId=" << rawId;
 	      
 	      // use a commmon value (e.g. for MC)
+	      // choose here if 1x2 or 2x2
+	      float fPixLorentzAnglePerTesla_ = -9999.; 
+	      if ( pixTopo->rocsX() == 1 ) {
+		fPixLorentzAnglePerTesla_ = fPixLorentzAnglePerTesla1x2_ ; 
+	      } else if ( pixTopo->rocsX() == 2 ) {
+		fPixLorentzAnglePerTesla_ = fPixLorentzAnglePerTesla2x2_ ; 
+	      }
 	      if(fPixLorentzAnglePerTesla_ != -9999.) {  // use common value for all 
 		cout<<" LA = "<< fPixLorentzAnglePerTesla_<<" common for all fpix"<<endl;
 		if(!LorentzAngle->putLorentzAngle(detid.rawId(),fPixLorentzAnglePerTesla_))

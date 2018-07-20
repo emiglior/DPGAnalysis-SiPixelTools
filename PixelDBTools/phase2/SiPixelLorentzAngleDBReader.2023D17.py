@@ -62,6 +62,6 @@ process.LorentzAngleReader = cms.EDAnalyzer("SiPixelLorentzAngleDBReader",
     useSimRcd = cms.bool(False)                                    
 )
 
-#process.p = cms.Path(process.LorentzAngleReader)
+process.p = cms.Path(process.LorentzAngleReader)
 
-process.Tracer = cms.Service("Tracer")
+#process.Tracer = cms.Service("Tracer")
