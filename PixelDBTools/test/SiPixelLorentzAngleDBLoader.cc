@@ -71,7 +71,6 @@ void SiPixelLorentzAngleDBLoader::analyze(const edm::Event& e, const edm::EventS
 	//	edm::ESHandle<TrackerTopology> tTopo;
 	//	es.get<TrackerTopologyRcd>().get(tTopo);
 
-
         //Retrieve old style tracker geometry from geometry
 	edm::ESHandle<TrackerGeometry> tGeometry;
 	es.get<TrackerDigiGeometryRecord>().get( tGeometry);
@@ -218,8 +217,8 @@ void SiPixelLorentzAngleDBLoader::analyze(const edm::Event& e, const edm::EventS
 
 	    } else { // bpix/fpix 
 	      cout<<"detid  is Pixel but neither bpix nor fpix: rawId " << detid.rawId() << " det type  "<<detType<<" subdet "<<detid.subdetId()<<std::endl;
-	      float defaultLA = 0.106;
-	      //	      LorentzAngle->putLorentzAngle(detid.rawId(),defaultLA); // some default value 
+	      float defaultLA = 0.07;
+	      LorentzAngle->putLorentzAngle(detid.rawId(),defaultLA); // some default value 
 	    } // bpix/fpix
 	    
 	  }
